@@ -167,7 +167,13 @@ retrieved from the token storage::
 
         public function resolve(Request $request, ArgumentMetadata $argument)
         {
-            yield $this->security->getUser();
+            $user = $this->security->getUser();
+
+            if (null === $user && !$argument->isNullable()) {
+                throw new \RuntimeException('User not found.');
+            }
+
+            yield $user;
         }
     }
 
